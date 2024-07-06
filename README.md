@@ -1,15 +1,20 @@
 # Infection Spread Simulation
 This a python program/library that simulates how an infection would spread. The simulation is very crude and probably not useful to draw scientific from.
 
+Credit to my friend Yashwant Konijeti for writing the GUI code.
+
+# How the Simulator works under the hood
+First the simulator spawns blobs (the equivalent to people inspired from the YouTube channel Primer) randomly on the map. Each blob has its own home that it might share with others. The simulator will randomly move each blob to a food place (equivalent to a restraunt or work place, this is the name used interanlly in the code) and its home. If the blobs comes close to an infected blob then there is a chance it could get infected.
+
 # How to run the Simulation...
-Fist you will have to add all the files (except the main.py as it is just an example). To run the simulation with a GUI, this is how you do it:
+Fist you will have to add all the files (except the main.py as it is just an example) to your project. Other than that you will also need to have pygame and matplotlib added to your project. To run the simulation with a GUI, this is how you do it:
 ```python
 import gui
 
 gui.run(max_infection_distance, infection_probablity, simulation_size)
 ```
 
-The max_infection_distance parameter determine the furthest distance from which a blob (the equivalent to person inspired from the YouTube channel Primer) can be infected from. The infection_probability determines the probability of a blob getting infected. The simulation_size parameters determine the number of blobs in the simulation.
+The max_infection_distance parameter determine the furthest distance from which a blob can be infected from. The infection_probability determines the probability of a blob getting infected. The simulation_size parameters determine the number of blobs in the simulation.
 
 But if you want to run the simulation with out the GUI, then this is how you do it:
 
