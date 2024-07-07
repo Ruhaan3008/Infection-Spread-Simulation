@@ -80,6 +80,6 @@ import Statistics
 
 Statistics.save_path = "your save path"
 
-#Takes SimuulationResults class as input parameter
-run_stats_after_sim(SimulationResults)
+#Takes SimulationResults class as input parameter
+Statistics.run_stats_after_sim(SimulationResults)
 ```
