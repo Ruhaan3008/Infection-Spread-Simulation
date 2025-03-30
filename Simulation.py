@@ -64,23 +64,23 @@ class Simulator:
     def spread_infection(self):
         arr_len = len(self.blobs)
         for x in range(arr_len):
+            blob = self.blobs[x]
+
+            if blob.IsInfected:
+                continue
+
             for y in range(arr_len):
-
-                if (self.blobs[x] == self.blobs[y]):
-                    continue
-
-                blob = self.blobs[x]
-
-                if blob.IsInfected:
+                if (x == y):
                     continue
 
                 other_blob = self.blobs[y]
-
-                are_blobs_in_range = Vector2.distance_to(blob.Location, other_blob.Location) <= self.MaxInfectionDistance
-                if not are_blobs_in_range:
+                
+                if not other_blob.IsInfected:
                     continue
 
-                if not other_blob.IsInfected:
+                dist_btw_blobs = Vector2.distance_to(blob.Location, other_blob.Location)
+                are_blobs_in_range =  dist_btw_blobs <= self.MaxInfectionDistance
+                if not are_blobs_in_range:
                     continue
 
                 get_infected = random.randint(0, 100) > self.InfectionProbability
@@ -89,9 +89,13 @@ class Simulator:
             
                 blob.IsInfected = True
                 self.blobs[x] = blob
+
+                dist_to_target = Vector2.distance_to(blob.Location, blob.TargetLocation)
+
                 self.add_total_infected_stats()
-                self.add_infect_on_way_stats(blob)
-                self.add_infect_at_place_stats(blob)
+                self.add_infect_on_way_stats(dist_to_target)
+                self.add_infect_at_place_stats(dist_to_target)
+
                 self.InfectedLocation.append(blob.Location)
 
     def add_total_infected_stats(self):
@@ -99,14 +103,14 @@ class Simulator:
         self.TotalInfected.append(self.TotalInfectedNumber)
         self.TotalInfectedTime.append(self.clock)
 
-    def add_infect_on_way_stats(self, blob):
-        if Vector2.distance_to(blob.Location, blob.TargetLocation) > self.MaxInfectionDistance:
+    def add_infect_on_way_stats(self, dist):
+        if dist > self.MaxInfectionDistance:
             self.InfectedOnWayNumber += 1
             self.InfectedOnWay.append(self.InfectedOnWayNumber)
             self.InfectedOnWayTime.append(self.clock)
 
-    def add_infect_at_place_stats(self, blob):
-        if Vector2.distance_to(blob.Location, blob.TargetLocation) < self.MaxInfectionDistance:
+    def add_infect_at_place_stats(self, dist):
+        if dist < self.MaxInfectionDistance:
             self.InfectedAtPlaceNumber += 1
             self.InfectedAtPlace.append(self.InfectedAtPlaceNumber)
             self.InfectedAtPlaceTime.append(self.clock)
