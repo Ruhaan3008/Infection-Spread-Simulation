@@ -20,6 +20,8 @@ blob_radius = 8
 place_width = 40
 place_height = 20
 
+render_time = []
+
 # Define locations for places
 food_places = [(336, 619), (660, 367), (825, 569), (372, 250),
                (617, 708), (171, 29), (706, 33), (57, 299), (908, 260)]
@@ -75,6 +77,9 @@ def run(max_infection_dist, infection_probability, simulation_size):
         game_time = time.time() - prev_time
         prev_time = time.time()
         game_time = round(game_time, 5)
+
+        render_time.append(game_time)
+
         sim.update_clock(game_time)
 
         # Update sim
@@ -94,6 +99,10 @@ def run(max_infection_dist, infection_probability, simulation_size):
 
     # Quit Pygame
     pygame.quit()
+
+    avg_render_time = sum(render_time)/len(render_time)
+    print("Average Render Time: " + str(avg_render_time))
+
     sam = simulation_size
     mid = sim.MaxInfectionDistance
     ip = sim.InfectionProbability
