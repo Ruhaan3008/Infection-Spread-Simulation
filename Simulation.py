@@ -62,7 +62,6 @@ class Simulator:
         self.blobs[size].set_home()
 
     def spread_infection(self):
-        arr_len = len(self.blobs)
         for blob, other_blob in combinations(self.blobs, 2):
 
             if blob.IsInfected == other_blob.IsInfected:

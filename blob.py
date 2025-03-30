@@ -35,7 +35,7 @@ class Blob:
         self.InAction = True
 
     def if_at_location_tasks_and_checks(self):
-        if self.Location == self.TargetLocation:
+        if self.Location.distance_to(self.TargetLocation) < 0.1:
             self.RestTimer -= (random.randint(1, 100)) / 1000
             if self.RestTimer <= 0:
                 self.set_new_target()
@@ -56,7 +56,7 @@ class Blob:
             self.TargetLocation = self.HomeLocation
             self.NextAction += 1
             return
-        self.TargetLocation = self.Sim.FoodLocations[(random.randint(0, 100) % len(self.Sim.HomeLocations))]
+        self.TargetLocation = random.choice(self.Sim.FoodLocations)
         self.NextAction += 1
         return
 
