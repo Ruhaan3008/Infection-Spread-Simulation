@@ -1,7 +1,7 @@
 import random
 
 from blob import Blob
-
+from itertools import combinations
 from pygame import Vector2
 
 
@@ -63,40 +63,32 @@ class Simulator:
 
     def spread_infection(self):
         arr_len = len(self.blobs)
-        for x in range(arr_len):
-            blob = self.blobs[x]
+        for blob, other_blob in combinations(self.blobs, 2):
 
+            if blob.IsInfected == other_blob.IsInfected:
+                continue
+            
             if blob.IsInfected:
+                blob, other_blob = other_blob, blob
+
+            dist_btw_blobs = Vector2.distance_to(blob.Location, other_blob.Location)
+            are_blobs_in_range =  dist_btw_blobs <= self.MaxInfectionDistance
+            if not are_blobs_in_range:
                 continue
 
-            for y in range(arr_len):
-                if (x == y):
-                    continue
+            get_infected = random.randint(0, 100) > self.InfectionProbability
+            if not get_infected:
+                continue
+        
+            blob.IsInfected = True
 
-                other_blob = self.blobs[y]
-                
-                if not other_blob.IsInfected:
-                    continue
+            dist_to_target = Vector2.distance_to(blob.Location, blob.TargetLocation)
 
-                dist_btw_blobs = Vector2.distance_to(blob.Location, other_blob.Location)
-                are_blobs_in_range =  dist_btw_blobs <= self.MaxInfectionDistance
-                if not are_blobs_in_range:
-                    continue
+            self.add_total_infected_stats()
+            self.add_infect_on_way_stats(dist_to_target)
+            self.add_infect_at_place_stats(dist_to_target)
 
-                get_infected = random.randint(0, 100) > self.InfectionProbability
-                if not get_infected:
-                    continue
-            
-                blob.IsInfected = True
-                self.blobs[x] = blob
-
-                dist_to_target = Vector2.distance_to(blob.Location, blob.TargetLocation)
-
-                self.add_total_infected_stats()
-                self.add_infect_on_way_stats(dist_to_target)
-                self.add_infect_at_place_stats(dist_to_target)
-
-                self.InfectedLocation.append(blob.Location)
+            self.InfectedLocation.append(blob.Location)
 
     def add_total_infected_stats(self):
         self.TotalInfectedNumber += 1
