@@ -1,6 +1,7 @@
 import pygame
 
 from Simulation import Simulator
+from blob import BlobState
 import Statistics
 
 import time
@@ -11,8 +12,9 @@ screen_height = 770
 
 
 # Define colors
-healthy_color = (0, 255, 0)
-infected_color = (255, 0, 0)
+healthy_color = (67, 236, 99)
+infected_color = (248, 128, 99)
+recovered_color = (30, 30, 30)
 
 # Define blob representation
 blob_radius = 8
@@ -31,7 +33,9 @@ homes = [(563, 159), (206, 159), (848, 159), (162, 364),
 
 def draw_blobs(sim, screen):
     for blob in sim.blobs:
-        color = healthy_color if not blob.IsInfected else infected_color
+        color = healthy_color if blob.HealthStatus == BlobState.Healthy else infected_color
+        if blob.HealthStatus == BlobState.Recovered:
+            color = recovered_color
         pygame.draw.circle(screen, (0, 0, 0), blob.Location, blob_radius + 2)
         pygame.draw.circle(screen, color, blob.Location, blob_radius)
 

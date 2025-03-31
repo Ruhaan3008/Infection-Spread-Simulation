@@ -1,6 +1,7 @@
 import random
 
 from blob import Blob
+from blob import BlobState
 from itertools import combinations
 from pygame import Vector2
 
@@ -12,11 +13,12 @@ class Simulator:
 
     MaxInfectionDistance = 20
     InfectionProbability = 0
+    InfectionTime = 100
 
     # time in hours, 1 = one hour, 24 = one day (seconds per hours)
     clock = 0
-    rawTime = 0
-    SimulationSpeed = 0
+    deltaTime = 0
+    SimulationSpeed = 5
 
     TotalInfectedNumber = 0
     TotalInfected = []
@@ -43,8 +45,8 @@ class Simulator:
         pass
 
     def update_clock(self, time_in_milliseconds):
-        self.clock += time_in_milliseconds
-        # self.clock = self.rawTime % self.SimulationSpeed
+        self.clock += time_in_milliseconds * self.SimulationSpeed
+        self.deltaTime = time_in_milliseconds * self.SimulationSpeed
 
     def reset_simulation(self, size):
         self.blobs = []
@@ -59,15 +61,20 @@ class Simulator:
         y = random.randint(0, 770)
 
         self.blobs.append(Blob(True, Vector2(x, y), self))
+        self.blobs[size].RecoveryTime = self.InfectionTime
         self.blobs[size].set_home()
 
     def spread_infection(self):
         for blob, other_blob in combinations(self.blobs, 2):
 
-            if blob.IsInfected == other_blob.IsInfected:
+            if (blob.HealthStatus == BlobState.Recovered or 
+                other_blob.HealthStatus == BlobState.Recovered):
+                continue
+
+            if blob.HealthStatus == other_blob.HealthStatus:
                 continue
             
-            if blob.IsInfected:
+            if blob.HealthStatus == BlobState.Infected:
                 blob, other_blob = other_blob, blob
 
             dist_btw_blobs = Vector2.distance_to(blob.Location, other_blob.Location)
@@ -79,7 +86,8 @@ class Simulator:
             if not get_infected:
                 continue
         
-            blob.IsInfected = True
+            blob.HealthStatus = BlobState.Infected
+            blob.RecoveryTime = self.InfectionTime
 
             dist_to_target = Vector2.distance_to(blob.Location, blob.TargetLocation)
 
@@ -109,7 +117,7 @@ class Simulator:
     def simulation_cycle(self):
         i = -1
         for blob in self.blobs:
-            blob.blob_cycle()
+            blob.blob_cycle(self.deltaTime)
             i += 1
             self.blobs[i] = blob
         self.spread_infection()

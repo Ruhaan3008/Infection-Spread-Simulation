@@ -1,14 +1,20 @@
 import random
 from pygame import Vector2
+from enum import Enum
 
+class BlobState(Enum):
+    Healthy = 0
+    Infected = 1
+    Recovered = 2
 
 class Blob:
-    IsInfected = False
+    HealthStatus = BlobState.Healthy
+
+    RecoveryTime = 0
+
     Location = Vector2(0, 0)
     HomeLocation: Vector2 = None
     WorkLocation: Vector2 = None
-
-    ActionLoop = 0
 
     ActionStartTime = 0
     ActionEndTime = 0
@@ -20,13 +26,18 @@ class Blob:
     AtLocation = False
     RestTimer = 0
 
-    MoveDistance = 0.1
+    MoveDistance = 20
+    deltaTime = 0
 
     def __init__(self, is_infected, loc, sim):
-        self.IsInfected = is_infected
         self.Location = loc
         self.Sim = sim
         self.TargetLocation = loc
+
+        if is_infected:
+            self.HealthStatus = BlobState.Infected
+            return
+        self.HealthStatus = BlobState.Healthy
 
     def blob_start_action(self, clock, time):
         self.ActionStartTime = clock
@@ -35,6 +46,10 @@ class Blob:
         self.InAction = True
 
     def if_at_location_tasks_and_checks(self):
+        if self.HealthStatus == BlobState.Infected:
+            self.RecoveryTime -= (random.randint(1, 100)) / 1000
+            if self.RecoveryTime <= 0:
+                self.HealthStatus = BlobState.Recovered
         if self.Location.distance_to(self.TargetLocation) < 0.1:
             self.RestTimer -= (random.randint(1, 100)) / 1000
             if self.RestTimer <= 0:
@@ -43,7 +58,7 @@ class Blob:
             self.move()
 
     def move(self):
-        self.Location = Vector2.move_towards(self.Location, self.TargetLocation, self.MoveDistance)
+        self.Location = Vector2.move_towards(self.Location, self.TargetLocation, self.MoveDistance * self.deltaTime)
         if self.Location == self.TargetLocation:
             self.RestTimer = 40
 
@@ -61,5 +76,6 @@ class Blob:
         return
 
 
-    def blob_cycle(self):
+    def blob_cycle(self, deltaTime):
+        self.deltaTime = deltaTime
         self.if_at_location_tasks_and_checks()
