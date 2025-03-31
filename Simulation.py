@@ -118,6 +118,4 @@ class Simulator:
         i = -1
         for blob in self.blobs:
             blob.blob_cycle(self.deltaTime)
-            i += 1
-            self.blobs[i] = blob
         self.spread_infection()
