@@ -50,7 +50,7 @@ class Simulator:
 
     def reset_simulation(self, size):
         self.blobs = []
-        for i in range(size):
+        for i in range(size - 1):
             x = random.randint(0, 1000)
             y = random.randint(0, 770)
 
@@ -61,8 +61,8 @@ class Simulator:
         y = random.randint(0, 770)
 
         self.blobs.append(Blob(True, Vector2(x, y), self))
-        self.blobs[size].RecoveryTime = self.InfectionTime
-        self.blobs[size].set_home()
+        self.blobs[size - 1].RecoveryTime = self.InfectionTime
+        self.blobs[size - 1].set_home()
 
     def spread_infection(self):
         for blob, other_blob in combinations(self.blobs, 2):
