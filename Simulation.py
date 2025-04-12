@@ -17,8 +17,6 @@ class Simulator:
 
     # time in hours, 1 = one hour, 24 = one day (seconds per hours)
     clock = 0
-    deltaTime = 0
-    SimulationSpeed = 5
 
     TotalInfectedNumber = 0
     TotalInfected = []
@@ -44,9 +42,8 @@ class Simulator:
         self.add_total_infected_stats()
         pass
 
-    def update_clock(self, time_in_milliseconds):
-        self.clock += time_in_milliseconds * self.SimulationSpeed
-        self.deltaTime = time_in_milliseconds * self.SimulationSpeed
+    def update_clock(self):
+        self.clock += 1
 
     def reset_simulation(self, size):
         self.blobs = []
@@ -117,5 +114,5 @@ class Simulator:
     def simulation_cycle(self):
         i = -1
         for blob in self.blobs:
-            blob.blob_cycle(self.deltaTime)
+            blob.blob_cycle()
         self.spread_infection()

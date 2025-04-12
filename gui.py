@@ -84,7 +84,7 @@ def run(max_infection_dist, infection_probability, simulation_size):
 
         render_time.append(game_time)
 
-        sim.update_clock(game_time)
+        sim.update_clock()
 
         # Update sim
         sim.simulation_cycle()

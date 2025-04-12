@@ -27,7 +27,6 @@ class Blob:
     RestTimer = 0
 
     MoveDistance = 20
-    deltaTime = 0
 
     def __init__(self, is_infected, loc, sim):
         self.Location = loc
@@ -58,7 +57,7 @@ class Blob:
             self.move()
 
     def move(self):
-        self.Location = Vector2.move_towards(self.Location, self.TargetLocation, self.MoveDistance * self.deltaTime)
+        self.Location = Vector2.move_towards(self.Location, self.TargetLocation, self.MoveDistance)
         if self.Location == self.TargetLocation:
             self.RestTimer = 40
 
@@ -76,6 +75,5 @@ class Blob:
         return
 
 
-    def blob_cycle(self, deltaTime):
-        self.deltaTime = deltaTime
+    def blob_cycle(self):
         self.if_at_location_tasks_and_checks()
