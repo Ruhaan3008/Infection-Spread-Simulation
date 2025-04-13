@@ -46,11 +46,11 @@ class Blob:
 
     def if_at_location_tasks_and_checks(self):
         if self.HealthStatus == BlobState.Infected:
-            self.RecoveryTime -= (random.randint(1, 100)) / 1000
+            self.RecoveryTime -= (random.randint(1, 3))
             if self.RecoveryTime <= 0:
                 self.HealthStatus = BlobState.Recovered
         if self.Location.distance_to(self.TargetLocation) < 0.1:
-            self.RestTimer -= (random.randint(1, 100)) / 1000
+            self.RestTimer -= (random.randint(2, 5))
             if self.RestTimer <= 0:
                 self.set_new_target()
         else:

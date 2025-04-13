@@ -58,7 +58,7 @@ def draw_places(sim, screen):
                                                              (place_width * 2) - 2, (place_height * 2) - 2))
 
 
-def run(max_infection_dist, infection_probability, simulation_size):
+def run(max_infection_dist, infection_probability, simulation_size, infection_time = 60):
     pygame.init()
 
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -67,8 +67,11 @@ def run(max_infection_dist, infection_probability, simulation_size):
     sim = Simulator(homes, food_places, max_infection_dist, infection_probability)
 
     sim.reset_simulation(simulation_size)
+    sim.InfectionTime = infection_time
 
     prev_time = time.time()
+
+    clock = pygame.time.Clock()
 
     # Main game loop
     running = True
@@ -100,6 +103,8 @@ def run(max_infection_dist, infection_probability, simulation_size):
 
         # Update the screen
         pygame.display.flip()
+
+        clock.tick(60)
 
     # Quit Pygame
     pygame.quit()

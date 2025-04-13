@@ -13,7 +13,7 @@ class Simulator:
 
     MaxInfectionDistance = 20
     InfectionProbability = 0
-    InfectionTime = 100
+    InfectionTime = 60
 
     # time in hours, 1 = one hour, 24 = one day (seconds per hours)
     clock = 0
