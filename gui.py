@@ -1,6 +1,7 @@
 import pygame
 
 from Simulation import Simulator
+from blob import BlobState
 import Statistics
 
 import time
@@ -11,14 +12,17 @@ screen_height = 770
 
 
 # Define colors
-healthy_color = (0, 255, 0)
-infected_color = (255, 0, 0)
+healthy_color = (67, 236, 99)
+infected_color = (248, 128, 99)
+recovered_color = (30, 30, 30)
 
 # Define blob representation
 blob_radius = 8
 
 place_width = 40
 place_height = 20
+
+render_time = []
 
 # Define locations for places
 food_places = [(336, 619), (660, 367), (825, 569), (372, 250),
@@ -29,7 +33,9 @@ homes = [(563, 159), (206, 159), (848, 159), (162, 364),
 
 def draw_blobs(sim, screen):
     for blob in sim.blobs:
-        color = healthy_color if not blob.IsInfected else infected_color
+        color = healthy_color if blob.HealthStatus == BlobState.Healthy else infected_color
+        if blob.HealthStatus == BlobState.Recovered:
+            color = recovered_color
         pygame.draw.circle(screen, (0, 0, 0), blob.Location, blob_radius + 2)
         pygame.draw.circle(screen, color, blob.Location, blob_radius)
 
@@ -52,7 +58,7 @@ def draw_places(sim, screen):
                                                              (place_width * 2) - 2, (place_height * 2) - 2))
 
 
-def run(max_infection_dist, infection_probability, simulation_size):
+def run(max_infection_dist, infection_probability, simulation_size, infection_time = 60):
     pygame.init()
 
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -61,8 +67,11 @@ def run(max_infection_dist, infection_probability, simulation_size):
     sim = Simulator(homes, food_places, max_infection_dist, infection_probability)
 
     sim.reset_simulation(simulation_size)
+    sim.InfectionTime = infection_time
 
     prev_time = time.time()
+
+    clock = pygame.time.Clock()
 
     # Main game loop
     running = True
@@ -75,7 +84,10 @@ def run(max_infection_dist, infection_probability, simulation_size):
         game_time = time.time() - prev_time
         prev_time = time.time()
         game_time = round(game_time, 5)
-        sim.update_clock(game_time)
+
+        render_time.append(game_time)
+
+        sim.update_clock()
 
         # Update sim
         sim.simulation_cycle()
@@ -92,8 +104,14 @@ def run(max_infection_dist, infection_probability, simulation_size):
         # Update the screen
         pygame.display.flip()
 
+        clock.tick(60)
+
     # Quit Pygame
     pygame.quit()
+
+    avg_render_time = sum(render_time)/len(render_time)
+    print("Average Render Time: " + str(avg_render_time))
+
     sam = simulation_size
     mid = sim.MaxInfectionDistance
     ip = sim.InfectionProbability
