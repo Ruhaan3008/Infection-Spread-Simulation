@@ -45,7 +45,7 @@ The max_infection_distance, infection_probability and simulation size is the sam
 
 If you want to run statistics the gui.run() return a SimulationResults class. 
 
-**Note:** The Simulator class does not contain or return SimulationResults but it does contain all the relevant info. The simulation also does not store information about when or where the blobs recovered.
+>**Note:** The Simulator class does not contain or return SimulationResults but it does contain all the relevant info. The simulation also does not store information about when or where the blobs recovered.
 
 If you are curious this is all the information the class contains:
 
